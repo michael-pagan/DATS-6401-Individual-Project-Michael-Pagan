@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- bootstrap stylesheet -->
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"> 
+    <!-- custom stylesheet -->
+    <link rel="stylesheet" type="text/css" href="css/main.css"> 
+    <title>DATS 6401 – Individual Project – Michael Pagan</title>
+    <!-- font awesome icons -->
+    <script src="https://kit.fontawesome.com/a0fdd6d6c5.js" crossorigin="anonymous"></script> 
+    <!-- for google visualization -->
+    <script src="https://www.gstatic.com/charts/loader.js"></script> 
+    <!-- jQuery js -->
+    <script src="js/jquery.js"></script> 
+    <!-- bootstrap js -->
+    <script src="js/bootstrap.min.js"></script> 
+    <script> //google visualizations
+        google.charts.load('current', {'packages':['corechart']}); 
+        google.charts.setOnLoadCallback(drawGoogleViz); //load all charts
+
+        function drawGoogleViz() {
+            drawChartName('growthrate', 'SELECT A,N', healthGrowthResponseHandler);
+            drawChartName('growthrate', 'SELECT A,M', healthPercentGrowthResponseHandler);
+        
+            //create DataTable for Average Health Spending vs. Average GDP
+            var datatable = new google.visualization.DataTable();
+
+            //add columns
+            datatable.addColumn('number', 'GDP Average');
+            datatable.addColumn('number', 'Health Average');
+
+            //column for tooltip content
+            datatable.addColumn({type: 'string', role: 'tooltip'});
+
+            //add rows
+            datatable.addRows([
+            [546.75, 46.24, 'Argentina'],
+            [1380.00, 122.71, 'Australia'],
+            [2236.25, 186.85, 'Brazil'],
+            [1698.75, 177.06, 'Canada'],
+            [9542.50, 454.01, 'China'],
+            [2667.50, 303.45, 'France'],
+            [3596.25, 394.88, 'Germany'],
+            [2033.75, 71.02, 'India'],
+            [897.88, 26.96, 'Indonesia'],
+            [2061.25, 184.00, 'Italy'],
+            [5281.25, 558.78, 'Japan'],
+            [1178.75, 67.80, 'Mexico'],
+            [1795.00, 91.39, 'Russia'],
+            [678.25, 32.44, 'Saudi Arabia'],
+            [358.63, 28.04, 'South Africa'],
+            [1318.75, 90.14, 'South Korea'],
+            [867.63, 38.56, 'Turkey'],
+            [2747.50, 253.58, 'United Kingdom'],
+            [17175.00, 2862.43, 'United States']
+            ]);
+
+            var options = {
+                colors: ['#b30000'],
+                title: 'Average Health Spending vs. Average GDP',
+                hAxis: {title: 'GDP (Billion $USD)'},
+                vAxis: {title: 'Health Spending (Billion $USD)'},
+                width: 1200,
+                height: 400,
+                legend: 'none',
+                explorer: {actions: ['dragToZoom', 'rightClickToReset'], axis: 'horizontal', maxZoomIn: .25, keepInBounds: true} // zoom functionality
+            };
+
+            var chart = new google.visualization.ScatterChart(document.getElementById('gdp_health_div'));
+
+            chart.draw(datatable, options);
+            //Average Health Spending vs. Average GDP
+
+            //create DataTable for Average Health Spending Per Capita vs. Average GDP Per Capita
+            var datatable = new google.visualization.DataTable();
+
+            //add coluimns
+            datatable.addColumn('number', 'GDP Average');
+            datatable.addColumn('number', 'Health Average');
+            //column for tooltip content
+            datatable.addColumn({type: 'string', role: 'tooltip'});
+
+            //add rows
+            datatable.addRows([
+            [12862.96, 1126.69,'Argentina'],
+            [59250.79, 5446.51, 'Australia'],
+            [11095.53, 919.14, 'Brazil'],
+            [48284.47, 5006.68, 'Canada'],
+            [7007.34, 328.89, 'China'],
+            [40408.03, 4613.52, 'France'],
+            [44219.92, 4892.97, 'Germany'],
+            [1574.90, 55.66, 'India'],
+            [3538.34, 106.18, 'Indonesia'],
+            [34276.84, 3049.83, 'Italy'],
+            [41436.73, 4359.07, 'Japan'],
+            [9873.53, 550.83, 'Mexico'],
+            [12422.29, 640.31, 'Russia'],
+            [22358.92, 1062.92, 'Saudi Arabia'],
+            [6655.40, 518.92, 'South Africa'],
+            [26094.81, 1792.92, 'South Korea'],
+            [11326.68, 505.42, 'Turkey'],
+            [42650.96, 3905.41, 'United Kingdom'],
+            [54104.77, 9001.17, 'United States']
+            ]);
+
+            var options = {
+                colors: ['#b30000'],
+                title: 'Average Health Spending Per Capita vs. Average GDP Per Capita',
+                hAxis: {title: 'GDP Per Capita ($USD)'},
+                vAxis: {title: 'Health Spending Per Capita ($USD)'},
+                width: 1200,
+                height: 400,
+                legend: 'none',
+                explorer: {actions: ['dragToZoom', 'rightClickToReset'], axis: 'horizontal  ', maxZoomIn: .25, keepInBounds: true}
+            };
+
+            var chart = new google.visualization.ScatterChart(document.getElementById('gdp_health_percapita_div'));
+
+            chart.draw(datatable, options);
+            //Average Health Spending Per Capita vs. Average GDP Per Capita
+
+        }; //drawGoogleViz
+
+        function drawChartName(sheetName, query, responseHandler) {
+            var queryString = encodeURIComponent(query);
+            var query = new google.visualization.Query(
+                'https://docs.google.com/spreadsheets/d/1bMAe02bwm1GSTZ0_RGGS5Cv8NrrrZrYcVbhyHqcgC70/gviz/tq?sheet='
+                    + sheetName +  '&headers=1&tq=' + queryString); //Query
+                query.send(responseHandler)
+        }; //drawChartName
+
+        function checkError(response) {
+            if (response.isError()) {
+                alert('Error is query: ' + response.getMessage() + ' ' + response.getDetailedMessage())
+                return;
+            };
+        }; //checkError
+
+        function healthGrowthResponseHandler(response){
+            checkError(response);
+            var data = response.getDataTable();
+            data.sort({column: 1, desc: true});
+
+            var options = {
+                bar: {groupWidth: '50%'},
+                colors: ['#b30000'],
+                legend: 'none',
+                width: 1200,
+                height: 400,
+                title: 'Change in Health Spending of G20 Countries',
+                vAxis: {title: 'Change in spending (Billion $USD)', logScale: true, minValue:-100, viewWindow: {min: -100}},
+                explorer: {actions: ['dragToZoom', 'rightClickToReset'], axis: 'vertical', maxZoomIn: .0, keepInBounds: true} //zoom functionality
+            };
+
+            var formatter = new google.visualization.NumberFormat({pattern: "##,### Billion USD"});
+            formatter.format(data, 1); //apply formatter to the second column
+
+            var chart = new google.visualization.ColumnChart(document.getElementById('health_growth_div'));
+
+            chart.draw(data, options);
+        }; //healthGrowthResponseHandler
+        
+        function healthPercentGrowthResponseHandler(response) {
+            checkError(response);
+            var data = response.getDataTable();
+            data.sort({column: 1, desc: true});
+
+            var options = {
+                bar: {groupWidth: '50%'},
+                colors: ['#b30000'],
+                legend: 'none',
+                width: 1200,
+                height: 400,
+                title: 'Annual Growth Rate of Health Spending of G20 Countries',
+                vAxis: {title: '% Annual Growth Rate', minValue:-5, viewWindow: {min: -5}},
+                explorer: {actions: ['dragToZoom', 'rightClickToReset'], axis: 'vertical', maxZoomIn: .0, keepInBounds: true}
+            };
+
+            var formatter = new google.visualization.NumberFormat({suffix: '%'});
+            formatter.format(data, 1); //apply formatter to the second column
+
+            var chart = new google.visualization.ColumnChart(document.getElementById('health_percent_growth_div'));
+
+            chart.draw(data, options);
+        }; //healthPercentGrowthResponseHandler
+
+    </script>
+    <script> //credit to W3Schools and Stack Overflow for this functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            window.onscroll = function() {staticNavBar()};
+           
+            var navbar = document.getElementById("navbar");
+
+            var sticky = navbar.offsetTop;
+
+            function staticNavBar() {
+                if (window.pageYOffset >= sticky) 
+                { navbar.classList.add("sticky") }
+                else { navbar.classList.remove("sticky"); };
+            }; //staticNavBar
+        }); //once DOM is loaded, execute function
+    </script>
+</head>
+<body>
+    <nav class="navbar navbar-expand-md container sticky" id="navbar">
+        <a class="navbar-brand" href="index.html">
+            <i class="fas fa-globe-americas fa-lg"></i>
+        </a>
+        <button class="navbar-toggler navbar-dark" type="button" data-toggle="collapse" data-target="#main-navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="main-navigation">
+          <ul class="navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link" href="index.html">Home</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="military.html">Military</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="health.html">Health</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="education.html">Education</a>
+              </li>
+          </ul> <!-- navbar-nav -->
+        </div> <!-- main-navigation -->
+    </nav> <!-- navbar navbar-expand md -->
+    <header class="page-header header container">
+        <h1 id="title">G20 Spending Analysis</h1>
+        <h5 id="subtitle">Health Spending for G20 Countries</h5>
+    </header>
+    <hr class="container">
+    <div id="plots" class="container">
+        <h3>Health Spending vs. GDP</h3>
+            <p>
+                Healthcare is expensive. The United States far exceeds any other country in both average spending on health 
+                care and average spending per capita (see the next chart). Most countries are spending similar, relatively small amounts on health care 
+                on average, with some spending more per capita than others, like Germany, Canada, and Australia.
+            </p>
+            <div id='gdp_health_div'></div>
+            <div id='gdp_health_percapita_div'></div>
+        <h3>Change in Health Spending</h3>
+            <p>
+                Trends in healthcare spending show that most countries have increased their spending in healthcare over the past 7 years, though some 
+                at a greater rate than others (see the below chart). It will be interesting to understand the effect of the COVID-19 global pandemic 
+                on these trends in the near future.
+            </p>
+            <div id='health_growth_div'></div>
+            <div id="health_percent_growth_div"></div>
+    </div> <!-- plots -->
+    <footer class="page-footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-md-8 col-sm-12">
+                    <h6 class="text-uppercase font-weight-bold">Additional Info</h6>
+                    <p>All data were obtained from the <a href="https://databank.worldbank.org/home.aspx">World Bank DataBank</a> and visualized through <a href="https://developers.google.com/chart">Google Visualization</a>.</p>
+                    <p>This project was made possible by the gracious instruction of Dr. Nima Zahadat and those who have contributed their time and knowledge across the Internet, but especially on <a href="https://www.w3schools.com/">W3Schools</a> and <a href="https://stackoverflow.com/">Stack Overflow</a>.</p>
+                </div> <!-- col-lg-8 col-md-8 col-sm-1 -->
+                <div id="info" class="col-lg-4 col-md-4 col-sm-12">
+                    <h6 class="text-uppercase font-weight-bold float-right">Personal Info</h6>
+                    <br/>
+                    <br/>
+                    <p class="float-right">
+                        <a class="float-right" href="https://www.linkedin.com/in/michael-r-pagan/">Michael Pagan</a>
+                        <br/>pagan.michael51@gmail.com
+                    </p> <!-- float-right -->
+                </div> <!-- info -->
+            </div> <!-- row -->
+        </div> <!-- container -->
+        <div class="footer-copyright text-center">© 2020 Copyright</div>
+    </footer> <!-- page-footer -->
+</body>
+</html>

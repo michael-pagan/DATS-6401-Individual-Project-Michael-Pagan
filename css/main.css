@@ -1,0 +1,96 @@
+/*--- navigation bar ---*/
+.navbar {
+    background: #00394d;
+    z-index: 10; /* to put nav bar in front of everything */
+}
+
+.sticky {
+    position: sticky;
+    top: 0;
+    width: 100%;
+} /* -- to keep nav bar static during scrolling */
+  
+.nav-link,
+.navbar-brand {
+    color: #fff;
+    cursor: pointer;
+}
+  
+.nav-link {
+    margin-right: 1em !important;
+}
+  
+.nav-link:hover {
+    color: #000;
+}
+
+.navbar-collapse {
+    justify-content: flex-end;
+}
+
+/* -- header tags -- */
+
+#title {
+    text-align: center;
+    margin: 20px 0 0 0;
+    padding: 30px 0 10px 0;
+}
+
+#subtitle {
+    text-align: center;
+    margin: 2px 0 40px 0;
+}
+
+#sub_subtitle {
+    text-align: center;
+    margin: -40px 0 10px 0;
+}
+
+/* -- body tags -- */
+
+body {
+    padding: 0;
+    margin: 0;
+    background: #fff;
+}
+
+#dropdown {
+    z-index: 1;
+}
+
+#plots h3 {
+    text-align: center;
+    margin: 40px 0 0 0;
+    z-index: 1; /* to put header text in front of visuals */
+}
+
+#per-capita {
+    margin: -90px 0 0 0;
+}
+
+#plots p {
+    margin: 20px 0 0 0;
+}
+
+#compare_military_percapita_div, #saudi_spending_div {
+    margin: 30px 0 0 0; /* need some more padding for the material charts */
+}
+
+#compare_average_spending_div, #per_capita_gdp_div,
+#gdp_education_div, #gdp_education_percapita_div,
+#education_growth_div, #gdp_military_div, 
+#gdp_military_percapita_div, #gdp_health_div,
+#gdp_health_percapita_div, #health_growth_div {
+    position: relative;  /* to put visuals behind header text */ 
+}
+
+/* -- footer --*/
+footer {
+    color: #000;
+    margin: 20px 0 0 0;
+    padding: 20px 0 20px 0;
+  }
+
+footer a:hover {
+    color: #000;
+}

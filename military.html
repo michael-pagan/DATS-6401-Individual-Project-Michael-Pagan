@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- bootstrap stylesheet -->
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"> 
+    <!-- custom stylesheet -->
+    <link rel="stylesheet" type="text/css" href="css/main.css"> 
+    <title>DATS 6401 – Individual Project – Michael Pagan</title>
+    <!-- font awesome icons -->
+    <script src="https://kit.fontawesome.com/a0fdd6d6c5.js" crossorigin="anonymous"></script> 
+    <!-- for google visualization -->
+    <script src="https://www.gstatic.com/charts/loader.js"></script> 
+    <!-- jQuery js -->
+    <script src="js/jquery.js"></script> 
+    <!-- bootstrap js -->
+    <script src="js/bootstrap.min.js"></script> 
+    <script> //google visualizations
+        google.charts.load('current', {'packages':['corechart']}); // load Google core charts
+        google.charts.load('current', {'packages':['line']}); // load Google Material line chart
+        google.charts.setOnLoadCallback(drawGoogleViz); //load all charts
+
+        function drawGoogleViz() {
+            drawChartName('saudi', 'SELECT A,K,L,M', compareGDPPerCapitaResponseHandler);
+            drawChartName('saudi', 'SELECT A,D,E', saudiSpendingResponseHandler);
+
+            // create DataTable for Military Average vs. GDP Average
+            var datatable = new google.visualization.DataTable();
+
+            // add columns
+            datatable.addColumn('number', 'GDP Average');
+            datatable.addColumn('number', 'Military Average');
+            // column for tooltip content
+            datatable.addColumn({type: 'string', role: 'tooltip'});
+
+            //add rows
+            datatable.addRows([
+            [546.75, 4.71, 'Argentina'],
+            [1380.00, 25.59, 'Australia'],
+            [2236.25, 31.08, 'Brazil'],
+            [1698.75, 19.33, 'Canada'],
+            [9542.50, 181.25, 'China'],
+            [2667.50, 60.69, 'France'],
+            [3596.25, 44.96, 'Germany'],
+            [2033.75, 51.71, 'India'],
+            [897.88, 6.94, 'Indonesia'],
+            [2061.25, 28.36, 'Italy'],
+            [5281.25, 50.68, 'Japan'],
+            [1178.75, 73.20, 'Mexico'],
+            [1795.00, 64.91, 'Russia'],
+            [678.25, 3.95, 'Saudi Arabia'],
+            [358.63, 34.48, 'South Africa'],
+            [1318.75, 6.92, 'South Korea'],
+            [867.63, 17.66, 'Turkey'],
+            [2747.50, 55.18, 'United Kingdom'],
+            [17175.00, 643.25, 'United States']
+            ]);
+
+            var options = {
+                width: 1200,
+                height: 400,
+                title: 'Average Military Spending vs. Average GDP',
+                hAxis: {title: 'GDP (Billion $USD)'},
+                vAxis: {title: 'Military Spending (Billion $USD)'},
+                legend: 'none',
+                colors: ['#5600b3'],
+                explorer: {actions: ['dragToZoom', 'rightClickToReset'], axis: 'horizontal', keepInBounds: true} // zoom functionality
+            };
+                
+            // create and draw the visualization
+            var chart = new google.visualization.ScatterChart(document.getElementById('gdp_military_div'));
+
+            chart.draw(datatable, options);   
+            //Military Average vs. GDP Average
+
+            // create the DataTable for the Average Military Per Capita vs. Average GDP Per Capita
+            var datatable = new google.visualization.DataTable();
+
+            // add columns
+            datatable.addColumn('number', 'Average GDP Per Capita');
+            datatable.addColumn('number', 'Average Military Spending Per Capita');
+            // column for tooltip content
+            datatable.addColumn({type: 'string', role: 'tooltip'});
+
+            // add rows
+            datatable.addRows([
+            [12862.96, 110.72, 'Argentina'],
+            [59250.79, 1099.06, 'Australia'],
+            [11095.53, 154.30, 'Brazil'],
+            [48284.47, 548.86, 'Canada'],
+            [7007.34, 132.84, 'China'],
+            [40408.03, 918.99, 'France'],
+            [44219.92, 552.95, 'Germany'],
+            [1574.90, 40.09, 'India'],
+            [3538.34, 27.32, 'Indonesia'],
+            [34276.84, 472.16, 'Italy'],
+            [41436.73, 397.67, 'Japan'],
+            [9873.53, 57.98, 'Mexico'],
+            [12422.29, 509.61, 'Russia'],
+            [22358.92, 2123.07, 'Saudi Arabia'],
+            [6655.40, 73.30, 'South Africa'],
+            [26094.81, 681.19, 'South Korea'],
+            [11326.68, 230.89, 'Turkey'],
+            [42650.96, 858.02, 'United Kingdom'],
+            [54104.77, 2030.22, 'United States']
+            ]);
+
+            var options = {
+                width: 1200,
+                height: 400,
+                colors: ['#5600b3'],
+                title: 'Average Military Spending Per Capita vs. Average GDP Per Capita',
+                hAxis: {title: 'Average GDP Per Capita ($USD)'},
+                vAxis: {title: 'Average Military Spending Per Capita ($USD)'},
+                explorer: {actions: ['dragToZoom', 'rightClickToReset'], axis: 'horizontal', keepInBounds: true}, //zoom functionality
+                legend: 'none'
+            };
+
+            var chart = new google.visualization.ScatterChart(document.getElementById('gdp_military_percapita_div'));
+
+            chart.draw(datatable, options); 
+            // Average Military Per Capita vs. Average GDP Per Capita
+
+        }; // drawGoogleViz
+        
+        function drawChartName(sheetName, query, responseHandler) {
+            var queryString = encodeURIComponent(query);
+            var query = new google.visualization.Query(
+                'https://docs.google.com/spreadsheets/d/1bMAe02bwm1GSTZ0_RGGS5Cv8NrrrZrYcVbhyHqcgC70/gviz/tq?sheet='
+                    + sheetName +  '&headers=1&tq=' + queryString); //Query
+                query.send(responseHandler)
+        }; //drawChartName
+
+        function checkError(response) {
+            if (response.isError()) {
+                alert('Error is query: ' + response.getMessage() + ' ' + response.getDetailedMessage())
+                return;
+            };
+        }; //checkError
+
+        function compareGDPPerCapitaResponseHandler(response){
+            checkError(response);
+            var data = response.getDataTable()
+
+            var formatter = new google.visualization.NumberFormat({pattern: "####"});
+            formatter.format(data, 0); //apply formatter to the first column
+            
+            var formatter = new google.visualization.NumberFormat({pattern: "##.##", suffix: '%'});
+            formatter.format(data, 1); //apply formatter to the second column
+            formatter.format(data, 2); //apply formatter to the third column
+            formatter.format(data, 3); //apply formatter to the fourth column
+
+            var options = {
+                title: 'Military Spending as a % of GDP of Countries with Similar Populations',
+                width: 1200,
+                height: 400,
+                hAxis: {title: 'Year', format: '####'},
+                vAxis: {title: '% of GDP'}
+            };
+
+            var chart = new google.charts.Line(document.getElementById('compare_military_percapita_div'))
+
+            chart.draw(data, google.charts.Line.convertOptions(options)); 
+            //google.charts accesses the materials charts
+            //google.charts.Line accesses the material line chart
+            //material charts require the options to be converted to fit their specific format
+            //so use .convertOptions(options) to get the options to work properly; note that not all
+            //options that work for the corecharts will work for the material charts
+
+        }; //compareGDPPerCapitaResponseHandler
+        
+        function saudiSpendingResponseHandler(response){
+            checkError(response);
+            var data = response.getDataTable()
+
+            var formatter = new google.visualization.NumberFormat({pattern: "####"});
+            formatter.format(data, 0); //apply formatter to the first column
+            
+            var formatter = new google.visualization.NumberFormat({pattern: "##,### USD", prefix: '$'});
+            formatter.format(data, 1); //apply formatter to the second column
+            formatter.format(data, 2) //apply formatter to the third column
+
+            var options = {
+                title: 'Military and Health Per Capita Expenses of Saudi Arabia',
+                width: 1200,
+                height: 400,
+                hAxis: {title: 'Year', format: '####'},
+                vAxis: {title: '$USD', format: '#,###'},
+                colors: ['#5600b3', '#b30000']
+            };
+
+            var chart = new google.charts.Line(document.getElementById('saudi_spending_div'));
+
+            chart.draw(data, google.charts.Line.convertOptions(options));
+
+        }; //saudiSpendingResponseHandler
+    </script>
+    <script> 
+        //create static nav bar
+        //credit to W3Schools and Stack Overflow for this functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            window.onscroll = function() {staticNavBar()};
+           
+            var navbar = document.getElementById("navbar");
+
+            var sticky = navbar.offsetTop;
+
+            function staticNavBar() {
+            if (window.pageYOffset >= sticky) 
+            { navbar.classList.add("sticky") }
+            else { navbar.classList.remove("sticky"); };
+            }; //staticNavBar
+        }); //stick nav bar on page load
+    </script>
+</head>
+<body>
+    <nav class="navbar navbar-expand-md container sticky" id="navbar">
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-globe-americas fa-lg"></i>
+            </a>
+            <button class="navbar-toggler navbar-dark" type="button" data-toggle="collapse" data-target="#main-navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="main-navigation">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="military.html">Military</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="health.html">Health</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="education.html">Education</a>
+                    </li>
+                </ul> <!-- navbar-nav -->
+            </div> <!-- main-navigation -->
+        </nav> <!-- navbar -->
+    <header class="page-header header container">
+        <h1 id="title">G20 Spending Analysis</h1>
+        <h5 id="subtitle">Military Spending for G20 Countries</h5>
+    </header>
+    <hr class="container">
+    <div id="plots" class="container">
+        <h3>Military Spending vs. GDP</h3>
+            <p>
+                China and the United States spend a considerable amount on their militaries on average. Most other G20 countries spend
+                relatively less - try zooming in to get a better look.
+            </p>
+            <div id='gdp_military_div'></div>
+        <h3>Per Capita Military Spending vs. Per Capita GDP</h3>
+            <p>
+                Interestingly, Saudi Arabia, despite having nearly half the average GDP per capita, spends about as much on military spending per 
+                capita as the United States does on average. See the below charts for more information on Saudi Arabia's spending.
+            </p>
+            <div id='gdp_military_percapita_div'></div>
+        <h3>Comparative Military Spending</h3>
+            <p>
+                Countries like Australia and Canada are roughly as populous as Saudi Arabia, but do not spend nearly as 
+                much of their GDP on the military as the Saudi Arabian's do, maxing out at spending 13.33% of their GDP on the military in 2015.
+            </p>
+            <p>
+                The sharp downturn in spending for Saudi Arabia in 2016 came as an effect of <a href="https://www.reuters.com/article/saudi-economy-budget/
+                saudi-arabia-cuts-2016-budget-deficit-to-boost-2017-spending-idUSD5N17S01X">low oil prices during this time</a> , leaving the country in a significant deficit
+                from the previous year.
+            </p>
+            <div id='compare_military_percapita_div'></div>
+        <h3>Saudi Arabia's Per Capita Military & Health Spending</h3>
+            <p>
+                Saudi Arabia spent nearly double what it did on military expenses per capita as it did on healthcare per capita between 2010 and 2017.
+            </p>
+            <div id='saudi_spending_div'></div>
+    </div> <!-- plots -->
+    <footer class="page-footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-md-8 col-sm-12">
+                    <h6 class="text-uppercase font-weight-bold">Additional Info</h6>
+                    <p>All data were obtained from the <a href="https://databank.worldbank.org/home.aspx">World Bank DataBank</a> and visualized through <a href="https://developers.google.com/chart">Google Visualization</a>.</p>
+                    <p>This project was made possible by the gracious instruction of Dr. Nima Zahadat and those who have contributed their time and knowledge across the Internet, but especially on <a href="https://www.w3schools.com/">W3Schools</a> and <a href="https://stackoverflow.com/">Stack Overflow</a>.</p>
+                </div> <!-- col-lg-8 col-md-8 col-sm-12 -->
+                <div id="info" class="col-lg-4 col-md-4 col-sm-12">
+                    <h6 class="text-uppercase font-weight-bold float-right">Personal Info</h6>
+                    <br/>
+                    <br/>
+                    <p class="float-right">
+                        <a class="float-right" href="https://www.linkedin.com/in/michael-r-pagan/">Michael Pagan</a>
+                        <br/>pagan.michael51@gmail.com
+                    </p> <!-- float-right -->
+                </div> <!-- info -->
+            </div> <!-- row -->
+        </div> <!-- container -->
+        <div class="footer-copyright text-center">© 2020 Copyright</div>
+    </footer> <!-- page-footer -->
+</body>
+</html>
