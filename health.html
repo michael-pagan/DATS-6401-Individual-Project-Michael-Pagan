@@ -154,7 +154,7 @@
                 explorer: {actions: ['dragToZoom', 'rightClickToReset'], axis: 'vertical', maxZoomIn: .0, keepInBounds: true} //zoom functionality
             };
 
-            var formatter = new google.visualization.NumberFormat({pattern: "##,### Billion USD"});
+            var formatter = new google.visualization.NumberFormat({pattern: "##,### Billion USD", prefix: '$'});
             formatter.format(data, 1); //apply formatter to the second column
 
             var chart = new google.visualization.ColumnChart(document.getElementById('health_growth_div'));
